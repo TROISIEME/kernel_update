@@ -1,0 +1,63 @@
+#! /bin/bash
+
+# This kernel update should be excuted by the root adminstator
+
+# Tell the user tha the script is starting
+echo "Kernel Update is starting"
+
+# Make sure that the root is executing the script
+echo " your UID is {UID}."
+if [[ "${UID}" -eq 0 ]]
+then
+	echo " I have the right to execute this proccess"
+else
+	echo " you do not have the right to execute this proscess"
+fi
+# Display the hostname of the system
+hostname
+echo
+# Display curent day and time when information are collected
+date
+echo
+#  Display kernel release and architecture
+uname -r
+echo
+uname -m
+echo
+# Display disk usage in human redable format
+df -h
+echo
+# Downlaod the new kernel version from the webside
+echo
+wget https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.12.tar.xz
+echo
+
+# Untar the new kernel
+tar -xvf linux-4.19.12.tar.xz
+echo
+# Cd into the new kernel folder
+cd linux-4.19.12
+echo
+# Installing dependncies 
+
+yum -y groupinstall “Development Tools”
+yum -y install openssl* libncurses5-dev ncurses-devel elfutils-libelf-devel
+echo
+make defconfig
+echo
+# compiling the kernel
+make
+echo
+# compile the module
+make modules
+echo
+#Install the modules driver
+make modules_install
+echo
+#create module image
+make install
+echo
+
+# End of the script
+echo "Kernel Update were nice and beautifull."
+echo
